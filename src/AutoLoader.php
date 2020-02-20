@@ -1,22 +1,29 @@
 <?php declare(strict_types=1);
 
-
 namespace cjhswoftElasticsearch;
 
-
-use function bean;
-use ReflectionException;
-use Swoft\Bean\Exception\ContainerException;
+use Swoft\Helper\ComposerJSON;
 use Swoft\SwoftComponent;
+use function dirname;
 
 /**
- * Class AutoLoader
+ * class AutoLoader
  *
  * @since 2.0
  */
-class AutoLoader extends SwoftComponent
+final class AutoLoader extends SwoftComponent
 {
     /**
+     * @return bool
+     */
+    public function enable(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get namespace and dirs
+     *
      * @return array
      */
     public function getPrefixDirs(): array
@@ -27,22 +34,37 @@ class AutoLoader extends SwoftComponent
     }
 
     /**
+     * Metadata information for the component
+     *
      * @return array
      */
     public function metadata(): array
     {
-        return [];
+        $jsonFile = dirname(__DIR__) . '/composer.json';
+
+        return ComposerJSON::open($jsonFile)->getMetadata();
     }
 
     /**
-     * @return array
-     * @throws ReflectionException
-     * @throws ContainerException
+     * {@inheritDoc}
      */
     public function beans(): array
     {
         return [
-         
+            'elastic-config'      => [
+                'class'    => Client::class,
+                'host'     => '127.0.0.1',
+                'port'     =>  9200,
+ 
+             
+            ],
+            'elastic.pool' => [
+                'class'   => Pool::class,
+                'client' => bean('elastic-config'),
+                ///'mark'  => 'rabbitmq_pool',
+                'minActive' => 10,
+                'maxActive' => 10,
+            ]
         ];
     }
 }
