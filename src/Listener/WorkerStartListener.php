@@ -27,11 +27,7 @@ class WorkerStartListener implements EventHandlerInterface
      */
     public function handle(EventInterface $event): void
     {
-        $pools = BeanFactory::getBeans(Pool::class);
 
-        /* @var Pool $pool */
-        foreach ($pools as $pool) {
-            $pool->initPool();
-        }
+      
     }
 }

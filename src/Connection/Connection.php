@@ -41,6 +41,12 @@ class Connection extends AbstractConnection
         $this->id = $id;
     }
 
+
+    public function getMark()
+    {
+        return  $this->pool -> getMark();
+    }
+
     /**
      * @param PoolInterface $pool
      */
@@ -163,7 +169,7 @@ class Connection extends AbstractConnection
     {
         /* @var ConnectionManager $conManager */
         $conManager = BeanFactory::getBean(ConnectionManager::class);
-        $conManager->releaseConnection($this->id);
+        $conManager->releaseConnection($this->pool->getMark());
 
         parent::release($force);
     }

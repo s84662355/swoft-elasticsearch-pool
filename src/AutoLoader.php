@@ -61,9 +61,10 @@ final class AutoLoader extends SwoftComponent
             'elastic.pool' => [
                 'class'   => Pool::class,
                 'client' => bean('elastic-config'),
-                ///'mark'  => 'rabbitmq_pool',
+                'mark' => 'my_elastic',
+                 
                 'minActive' => 10,
-                'maxActive' => 10,
+                'maxActive' => 80,
             ]
         ];
     }

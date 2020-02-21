@@ -305,45 +305,7 @@ class ConnectionInstance
     {
         $this->elasticsearch = $elasticsearch;
     }
-
-    /**
-     * command
-     *
-     * @param array $methods
-     *
-     * @return mixed
-     * @throws ElasticsearchException
-     */
-    public function command(array $methods)
-    {
-        try {
-            $result = null;
-            foreach ($methods as $method => $arguments) {
-                if ($result) {
-                    $result = $result->{$method}(...$arguments);
-                } else {
-                    $result = $this->elasticsearch->{$method}(...$arguments);
-                }
-            }
-            $this->connection->release();
-        } catch (Exception $e) {
-            $this->connection->release();
-
-            $message   = $e->getMessage();
-            $exception = new ElasticsearchException(sprintf('ElasticSearch command error(%s)', $message));
-
-            $error = json_decode($message, true);
-
-            if (isset($error['error']['reason'])) {
-                $exception->setResponse($error);
-            }
-
-            throw $exception;
-        }
-
-        return $result;
-    }
-
+ 
     /**
      * Magic method __call
      *
@@ -355,17 +317,6 @@ class ConnectionInstance
      */
     public function __call(string $method, array $arguments)
     {
-        if (isset($this->namespaceMethods[$method])) {
-            $methods = [
-                $this->namespaceMethods[$method][0] => [],
-                $this->namespaceMethods[$method][1] => $arguments,
-            ];
-
-            $result = $this->command($methods);
-        } else {
-            $result = $this->command([$method => $arguments]);
-        }
-
-        return $result;
+        return  $this->elasticsearch->{$method}(...$arguments);
     }
 }

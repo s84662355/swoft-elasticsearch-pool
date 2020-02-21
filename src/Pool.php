@@ -23,12 +23,23 @@ class Pool extends AbstractPool
      */
     private $client;
 
+
+    /**
+     * @var string
+     */
+    private $mark ;
+
     /**
      * @return Client
      */
     public function getClient(): Client
     {
         return $this->client;
+    }
+
+    public function getMark()
+    {
+        return $this->mark ;
     }
 
     /**
